@@ -1,0 +1,91 @@
+#라즈베리파이에서 버튼 누르면(입력받으면) FAN/네오픽셀 oN/OFF되는 코드
+import RPi.GPIO as GPIO
+import time
+#동시에 제어될 센서류끼리 같은 핀 할당함
+GPIO.setmode(GPIO.BCM)
+fan=17
+#uv=17
+heat=27 #히터모듈
+#heat_fan=27 #열풍팬
+heat_cooler=22 #열풍쿨러
+dusty=23 #액추에이터랑 dc동시에 제어
+GPIO.setup(fan, GPIO.OUT) ## GPIO 17 ouput
+GPIO.setup(uv, GPIO.OUT) ## GPIO 27 output
+GPIO.setup(heat, GPIO.OUT)
+GPIO.setup(heat_fan, GPIO.OUT)
+
+'''
+def blink():
+    print ("Starting blinking fever!")
+    iteracion = 0
+    while iteracion < 30: ## Blink for 30'
+        GPIO.output(17, True) ## On 17
+        GPIO.output(27, False) ## Off 27
+        time.sleep(1) ## Wait one second
+        GPIO.output(17, False) ## Off 17
+        GPIO.output(27, True) ## On 27
+        time.sleep(1) ## Wait one second
+        iteracion = iteracion + 2 ## Add 2 second, one for each blink
+    print ("I'm done!")
+    GPIO.cleanup() ## Clean the GPIO
+
+blink() ## Call the function
+'''
+
+#웹에서 on/off버튼 입력 받으면 환기,살균 on/off제어
+def sensor_on() :
+    print("ON!")
+    order=input("on / off : ")
+    if (order == "on"):
+        GPIO.output(fan, True)
+        GPIO.output(uv, True)
+        time.sleep(3)
+        GPIO.output(fan, False)
+        GPIO.output(uv, False)
+    elif(order == "off"):
+        GPIO.output(fan, False)
+        GPIO.output(uv, False)
+        time.sleep(3)
+    print ("I'm done!")
+    GPIO.cleanup() #GPIO핀 초기화 
+
+def heatdry() :
+    print("heat on !")
+    order=input("on/off :")
+    if (order=="on"):
+        GPIO.output(heat,True)
+        GPIO.output(heat_fan,True)
+        time.sleep(3)
+        GPIO.output(heat,False)
+        GPIO.output(heat_fan,False)
+        GPIO.output(heat_cooler,True)
+        time.sleep(3)
+        GPIO.output(heat_cooler,False)
+    elif(order == "off"):
+        GPIO.output(heat, False)
+        GPIO.output(heat_fan, False)
+        GPIO.output(heat_cooler, False)
+    print ("Heat complete!")
+    GPIO.cleanup() #GPIO핀 초기화 
+
+def dusty() :
+    print("dusty on ! " )
+    order=input("on / off : ")
+    if (order == "on"):
+        GPIO.output(dusty, True)
+        time.sleep(3)
+        GPIO.output(dusty, False)
+    elif(order == "off"):
+        GPIO.output(dusty, False)
+        time.sleep(3)
+    print ("I'm done!")
+    GPIO.cleanup() #GPIO핀 초기화 
+
+while True:
+    sensor_on()
+    
+    
+    
+        
+
+           
